@@ -1,0 +1,33 @@
+{
+  "name": "chrome-jumper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "background.js",
+  "scripts": {
+    "build": "webpack"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chrome": "0.0.60",
+    "@types/lodash": "^4.14.104",
+    "@types/node": "^9.4.7",
+    "@types/promisify-node": "^0.4.0",
+    "copy-webpack-plugin": "^4.5.1",
+    "css-loader": "^0.28.10",
+    "lodash": "^4.17.5",
+    "promisify-node": "^0.4.0",
+    "request": "^2.83.0",
+    "request-all-pages": "^0.3.1",
+    "request-promise-native": "^1.0.5",
+    "ts-loader": "^4.0.1",
+    "ts-node": "^5.0.1",
+    "typescript": "^2.7.2",
+    "vue": "^2.5.15",
+    "vue-loader": "^14.2.1",
+    "vue-template-compiler": "^2.5.15",
+    "vue-ts-loader": "0.0.3",
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.11"
+  }
+}
