@@ -1,28 +1,35 @@
 <template>
   <div>
-    <label for="github-api-key">GitHub API Key</label>
-    <input type="text" id="github-api-key" v-model="githubApiKey">
+    <label for="api-key">API Key</label>
+    <input type="text" id="api-key" v-model="options.apiKey">
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import promisify from 'promisify-node'
-import { storageGet } from '../lib/storage'
+import { storageGet, getOptions } from '../lib/storage'
+
+const defaultOptions = {
+  apiKey: ''
+}
 
 export default Vue.extend({
   data() {
     return {
-      githubApiKey: ''
+      options: defaultOptions
     }
   },
   async mounted() {
-    const data = await storageGet('githubApiKey')
-    this.githubApiKey = data.githubApiKey
+    const options = await getOptions()
+    if (options !== undefined) this.options = options
   },
   watch: {
-    githubApiKey: function (newValue, oldValue) {
-      chrome.storage.local.set({ githubApiKey: newValue })
+    options: {
+      handler: function (newValue, oldValue) {
+        chrome.storage.local.set({ options: JSON.stringify(newValue) })
+      },
+      deep: true
     }
   }
 })

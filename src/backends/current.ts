@@ -1,7 +1,8 @@
 const originalRequestAllPages = require('request-all-pages')
 import promisify from 'promisify-node'
 import { flatMap } from 'lodash'
-import { storageGet } from './storage'
+import { storageGet } from '../../lib/storage'
+import { IBackend, ISearchResult } from '..'
 
 interface IRepo {
   full_name: string
@@ -15,12 +16,11 @@ interface ICachedRepos {
   cachedRepos: string[]
 }
 
-const requestAllPages = promisify(originalRequestAllPages)
-
-async function hasCachedRepos(): Promise<boolean> {
-  const { cachedRepos } = await storageGet('cachedRepos') as ICachedRepos
-  return cachedRepos !== undefined
+export interface IOptions {
+  apiKey: string
 }
+
+const requestAllPages = promisify(originalRequestAllPages)
 
 async function getRepos(apiKey: string): Promise<string[]> {
   const { cachedRepos } = await storageGet('cachedRepos') as ICachedRepos
@@ -52,4 +52,21 @@ async function getRepos(apiKey: string): Promise<string[]> {
   }
 }
 
-export { getRepos, hasCachedRepos }
+export const backend: IBackend = {
+  async hasCache(): Promise<boolean> {
+    const { cachedRepos } = await storageGet('cachedRepos') as ICachedRepos
+    return cachedRepos !== undefined
+  },
+
+  async search(query: string, options: IOptions): Promise<ISearchResult[]> {
+    const repos = await getRepos(options.apiKey)
+    return repos.filter(r => r.indexOf(query) >= 0)
+                .map(r => { return { title: r } })
+  },
+
+  async select(itemTitle: string, options: IOptions) {
+    const repos = await getRepos(options.apiKey)
+    const repo = repos.find(r => r === itemTitle)
+    if (repo) chrome.tabs.update({ url: `https://github.com/${repo}` })
+  }
+}

@@ -1,3 +1,4 @@
+const webpack = require('webpack')
 const path = require('path')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
@@ -34,8 +35,10 @@ module.exports = {
   plugins: [
     new CopyWebpackPlugin([
       '*.html',
-      'manifest.json',
       '*.png'
-    ])
+    ]),
+    new webpack.DefinePlugin({
+      BACKEND: process.env.BACKEND
+    })
   ]
 }
